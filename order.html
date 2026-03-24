@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Online Food Ordering - Place Order</title>
+    <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+    <header>
+        <h1>Place Your Order</h1>
+        <nav>
+            <a href="/home">Home</a>
+            <a href="/menu">Menu</a>
+            <a href="/order">Order</a>
+        </nav>
+    </header>
+
+    <main>
+        <section class="card">
+            <h2>Order Form</h2>
+            <form id="orderForm">
+                <input id="customerName" type="text" placeholder="Enter your name" required>
+                <input id="phoneNumber" type="tel" placeholder="Enter phone number" required>
+                <textarea id="address" rows="3" placeholder="Enter address" required></textarea>
+
+                <h3>Select Items (Multiple Selection)</h3>
+
+                <details class="category-box">
+                    <summary>Starters</summary>
+                    <div class="category-items">
+                        <label><input type="checkbox" class="item-check" data-item="French Fries" data-price="100"> French Fries - Rs. 100</label>
+                        <label><input type="checkbox" class="item-check" data-item="Cheese Balls" data-price="140"> Cheese Balls - Rs. 140</label>
+                        <label><input type="checkbox" class="item-check" data-item="Veg Spring Roll" data-price="130"> Veg Spring Roll - Rs. 130</label>
+                        <label><input type="checkbox" class="item-check" data-item="Garlic Bread" data-price="120"> Garlic Bread - Rs. 120</label>
+                        <label><input type="checkbox" class="item-check" data-item="Crispy Corn" data-price="110"> Crispy Corn - Rs. 110</label>
+                    </div>
+                </details>
+
+                <details class="category-box">
+                    <summary>Main Course</summary>
+                    <div class="category-items">
+                        <label><input type="checkbox" class="item-check" data-item="Veg Burger" data-price="120"> Veg Burger - Rs. 120</label>
+                        <label><input type="checkbox" class="item-check" data-item="Paneer Pizza" data-price="250"> Paneer Pizza - Rs. 250</label>
+                        <label><input type="checkbox" class="item-check" data-item="Fried Rice" data-price="180"> Fried Rice - Rs. 180</label>
+                        <label><input type="checkbox" class="item-check" data-item="White Sauce Pasta" data-price="200"> White Sauce Pasta - Rs. 200</label>
+                        <label><input type="checkbox" class="item-check" data-item="Chole Bhature" data-price="150"> Chole Bhature - Rs. 150</label>
+                    </div>
+                </details>
+
+                <details class="category-box">
+                    <summary>Hot Drinks</summary>
+                    <div class="category-items">
+                        <label><input type="checkbox" class="item-check" data-item="Tea" data-price="40"> Tea - Rs. 40</label>
+                        <label><input type="checkbox" class="item-check" data-item="Coffee" data-price="60"> Coffee - Rs. 60</label>
+                        <label><input type="checkbox" class="item-check" data-item="Hot Chocolate" data-price="90"> Hot Chocolate - Rs. 90</label>
+                        <label><input type="checkbox" class="item-check" data-item="Masala Milk" data-price="70"> Masala Milk - Rs. 70</label>
+                        <label><input type="checkbox" class="item-check" data-item="Green Tea" data-price="55"> Green Tea - Rs. 55</label>
+                    </div>
+                </details>
+
+                <details class="category-box">
+                    <summary>Cold Drinks</summary>
+                    <div class="category-items">
+                        <label><input type="checkbox" class="item-check" data-item="Lemon Juice" data-price="50"> Lemon Juice - Rs. 50</label>
+                        <label><input type="checkbox" class="item-check" data-item="Mango Shake" data-price="95"> Mango Shake - Rs. 95</label>
+                        <label><input type="checkbox" class="item-check" data-item="Cold Coffee" data-price="110"> Cold Coffee - Rs. 110</label>
+                        <label><input type="checkbox" class="item-check" data-item="Fresh Lime Soda" data-price="65"> Fresh Lime Soda - Rs. 65</label>
+                        <label><input type="checkbox" class="item-check" data-item="Chocolate Milkshake" data-price="120"> Chocolate Milkshake - Rs. 120</label>
+                    </div>
+                </details>
+
+                <button type="submit">Place Order</button>
+            </form>
+
+            <section id="billSection" class="bill-card hidden">
+                <h3>Order Summary</h3>
+                <p><strong>Name:</strong> <span id="billName"></span></p>
+                <p><strong>Phone Number:</strong> <span id="billPhone"></span></p>
+                <p><strong>Address:</strong> <span id="billAddress"></span></p>
+                <p><strong>Selected Items:</strong></p>
+                <ul id="billItems"></ul>
+                <p class="total-amount"><strong>Final Bill Amount:</strong> Rs. <span id="billTotal">0</span></p>
+            </section>
+        </section>
+    </main>
+
+    <footer>
+        <p>Thank you for using Online Food Ordering System.</p>
+    </footer>
+
+    <script>
+        const orderForm = document.getElementById("orderForm");
+        const billSection = document.getElementById("billSection");
+        const billName = document.getElementById("billName");
+        const billPhone = document.getElementById("billPhone");
+        const billAddress = document.getElementById("billAddress");
+        const billItems = document.getElementById("billItems");
+        const billTotal = document.getElementById("billTotal");
+
+        orderForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+
+            const selected = Array.from(document.querySelectorAll(".item-check:checked"));
+            if (selected.length === 0) {
+                alert("Please select at least one item.");
+                return;
+            }
+
+            billItems.innerHTML = "";
+            let total = 0;
+
+            selected.forEach((item) => {
+                const name = item.dataset.item;
+                const price = Number(item.dataset.price);
+                total += price;
+
+                const li = document.createElement("li");
+                li.textContent = name + " - Rs. " + price;
+                billItems.appendChild(li);
+            });
+
+            billName.textContent = document.getElementById("customerName").value;
+            billPhone.textContent = document.getElementById("phoneNumber").value;
+            billAddress.textContent = document.getElementById("address").value;
+            billTotal.textContent = total;
+
+            billSection.classList.remove("hidden");
+            billSection.scrollIntoView({ behavior: "smooth" });
+        });
+    </script>
+</body>
+</html>
